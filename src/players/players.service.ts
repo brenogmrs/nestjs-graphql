@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
-import { CreatePlayerDTO } from './dtos/create-player.dto';
+import { CreatePlayerDTO, UpdatePlayerDTO } from './dtos/create-player.dto';
 import { PlayerInterface } from './interfaces/player.interface';
 
 @Injectable()
@@ -12,12 +12,24 @@ export class PlayersService {
     public async createOrUpdatePlayer(
         playerData: CreatePlayerDTO,
     ): Promise<void> {
-        this.logger.log(`create or update player, ${playerData}`);
+        const { email } = playerData;
 
-        this.create(playerData);
+        const foundPlayer = this.players.find(
+            (player) => player.email === email,
+        );
+
+        if (foundPlayer) {
+            await this.update(foundPlayer, playerData);
+        } else {
+            await this.create(playerData);
+        }
     }
 
-    private create(playerData: CreatePlayerDTO): void {
+    public async getAll(): Promise<PlayerInterface[]> {
+        return this.players;
+    }
+
+    private async create(playerData: CreatePlayerDTO): Promise<void> {
         const { email, name, phoneNumber } = playerData;
 
         const player: PlayerInterface = {
@@ -33,5 +45,14 @@ export class PlayersService {
         this.logger.log(`create or update player, ${JSON.stringify(player)}`);
 
         this.players.push(player);
+    }
+
+    private async update(
+        player: PlayerInterface,
+        updateData: UpdatePlayerDTO,
+    ): Promise<void> {
+        const { name } = updateData;
+
+        player.name = name;
     }
 }
