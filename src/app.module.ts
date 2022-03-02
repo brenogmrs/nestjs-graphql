@@ -6,7 +6,10 @@ import { PlayersModule } from './players/players.module';
 @Module({
     imports: [
         ConfigModule.forRoot(),
-        MongooseModule.forRoot(String(process.env.MONGODB_CONN_STRING)),
+        MongooseModule.forRoot(String(process.env.MONGODB_CONN_STRING), {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        }),
         PlayersModule,
     ],
     controllers: [],
