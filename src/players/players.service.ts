@@ -32,14 +32,14 @@ export class PlayersService {
     private async create(playerData: CreatePlayerDTO): Promise<void> {
         const { email, name, phoneNumber } = playerData;
 
-        const player: PlayerInterface = {
+        const player: any = {
             _id: uuid(),
             name,
             email,
             phoneNumber,
             ranking: 'A',
             rankingPosition: 1,
-            photo_url: 'google.com/foto123.jpg',
+            photoUrl: 'google.com/foto123.jpg',
         };
 
         this.logger.log(`create or update player, ${JSON.stringify(player)}`);
