@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { CreatePlayerDTO } from '../dtos/create-player.dto';
 import { PlayerInterface } from '../interfaces/player.interface';
+import { PlayerValidationParamsPipe } from '../pipes/player-validation-param.pipe';
 import { PlayersService } from '../services/players.service';
 
 @Controller('v1/players')
@@ -24,7 +25,7 @@ export class PlayersController {
 
     @Get()
     async getPlayers(
-        @Query('email') email: string,
+        @Query('email', PlayerValidationParamsPipe) email: string,
     ): Promise<PlayerInterface[] | PlayerInterface> {
         if (email) {
             return this.playersService.getByEmail(email);
@@ -33,7 +34,9 @@ export class PlayersController {
     }
 
     @Delete()
-    async deletePlayer(@Query('email') email: string): Promise<void> {
-        this.playersService.deletePlayer(email);
+    async deletePlayer(
+        @Query('email', PlayerValidationParamsPipe) email: string,
+    ): Promise<void> {
+        await this.playersService.deletePlayer(email);
     }
 }
