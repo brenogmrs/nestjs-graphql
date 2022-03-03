@@ -55,7 +55,7 @@ export class PlayersService {
         return foundPlayer;
     }
 
-    public async deletePlayer(email: string): Promise<PlayerInterface> {
-        return this.playerModel.remove({ email }).exec();
+    public async deletePlayer(email: string): Promise<void> {
+        await this.playerModel.deleteOne({ email }).exec();
     }
 }

@@ -14,7 +14,7 @@ export class UpdatePlayerDTO {
     @IsString()
     readonly phoneNumber?: string;
 
-    @IsString()
+    @IsEmail()
     readonly email?: string;
 
     @IsString()
