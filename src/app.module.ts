@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CategoryModule } from './category/categories.module';
-import { PlayersModule } from './players/players.module';
+import { PlayerModule } from './player/player.module';
 
 @Module({
     imports: [
@@ -11,7 +11,7 @@ import { PlayersModule } from './players/players.module';
             useNewUrlParser: true,
             useUnifiedTopology: true,
         }),
-        PlayersModule,
+        PlayerModule,
         CategoryModule,
     ],
     controllers: [],

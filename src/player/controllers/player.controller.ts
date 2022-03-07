@@ -14,16 +14,16 @@ import { CreatePlayerDTO } from '../dtos/create-player.dto';
 import { UpdatePlayerDTO } from '../dtos/update-player.dto';
 import { PlayerInterface } from '../interfaces/player.interface';
 import { PlayerValidationParamsPipe } from '../pipes/player-validation-param.pipe';
-import { PlayersService } from '../services/players.service';
+import { PlayerService } from '../services/player.service';
 
-@Controller('v1/players')
-export class PlayersController {
-    constructor(private readonly playersService: PlayersService) {}
+@Controller('v1/player')
+export class PlayerController {
+    constructor(private readonly playerService: PlayerService) {}
 
     @Post()
     @UsePipes(ValidationPipe)
     async createPlayer(@Body() body: CreatePlayerDTO): Promise<void> {
-        await this.playersService.create(body);
+        await this.playerService.create(body);
     }
 
     @Put('/:id')
@@ -32,19 +32,19 @@ export class PlayersController {
         @Param('id', PlayerValidationParamsPipe) id: string,
         @Body() updateData: UpdatePlayerDTO,
     ): Promise<void> {
-        await this.playersService.update(id, updateData);
+        await this.playerService.update(id, updateData);
     }
 
     @Get()
     async getPlayers(): Promise<PlayerInterface[]> {
-        return this.playersService.getAll();
+        return this.playerService.getAll();
     }
 
     @Get('/:id')
     async getPlayerById(
         @Param('id', PlayerValidationParamsPipe) id: string,
     ): Promise<PlayerInterface> {
-        return this.playersService.getById(id);
+        return this.playerService.getById(id);
     }
 
     @Delete('/id')
@@ -52,6 +52,6 @@ export class PlayersController {
         @Query('email', PlayerValidationParamsPipe) email: string,
         @Param('id', PlayerValidationParamsPipe) id: string,
     ): Promise<void> {
-        await this.playersService.delete(id);
+        await this.playerService.delete(id);
     }
 }

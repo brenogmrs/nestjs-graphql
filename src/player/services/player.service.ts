@@ -6,7 +6,7 @@ import { UpdatePlayerDTO } from '../dtos/update-player.dto';
 import { PlayerInterface } from '../interfaces/player.interface';
 
 @Injectable()
-export class PlayersService {
+export class PlayerService {
     constructor(
         @InjectModel('Player')
         private readonly playerModel: Model<PlayerInterface>,
