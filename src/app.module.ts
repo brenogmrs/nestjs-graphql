@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { CategoryModule } from './category/categories.module';
 import { PlayersModule } from './players/players.module';
-import { CategoriesModule } from './categories/categories.module';
 
 @Module({
     imports: [
@@ -12,7 +12,7 @@ import { CategoriesModule } from './categories/categories.module';
             useUnifiedTopology: true,
         }),
         PlayersModule,
-        CategoriesModule,
+        CategoryModule,
     ],
     controllers: [],
     providers: [],

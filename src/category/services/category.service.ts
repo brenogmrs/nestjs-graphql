@@ -5,7 +5,7 @@ import { CreateCategoryDTO } from '../dtos/create-category.dto';
 import { CategoryInterface } from '../interfaces/category.interface';
 
 @Injectable()
-export class CategoriesService {
+export class CategoryService {
     constructor(
         @InjectModel('Category')
         private readonly categoryModel: Model<CategoryInterface>,
