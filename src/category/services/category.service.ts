@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+    ConflictException,
+    Injectable,
+    NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateCategoryDTO } from '../dtos/create-category.dto';
@@ -14,20 +18,40 @@ export class CategoryService {
     public async create(
         categoryData: CreateCategoryDTO,
     ): Promise<CategoryInterface> {
-        await this.findByCategory(categoryData.category);
+        const foundCategory = await this.findByCategory(categoryData.category);
+
+        if (foundCategory) {
+            throw new ConflictException('Category already exists');
+        }
 
         const categoryToCreate = new this.categoryModel(categoryData);
 
         return categoryToCreate.save();
     }
 
-    public async findByCategory(category: string) {
+    public async findByCategory(category: string): Promise<CategoryInterface> {
         const foundCategory = await this.categoryModel
             .findOne({ category })
             .exec();
 
-        if (foundCategory) {
-            throw new NotFoundException('Category already exists');
+        if (!foundCategory) {
+            throw new NotFoundException('Category not found');
         }
+
+        return foundCategory;
+    }
+
+    public async getAll(): Promise<CategoryInterface[]> {
+        return this.categoryModel.find().exec();
+    }
+
+    public async getById(id: string): Promise<CategoryInterface> {
+        const foundCategory = await this.categoryModel.findOne({ id }).exec();
+
+        if (!foundCategory) {
+            throw new NotFoundException('Category not found');
+        }
+
+        return foundCategory;
     }
 }
