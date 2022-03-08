@@ -10,10 +10,10 @@ import {
     UsePipes,
     ValidationPipe,
 } from '@nestjs/common';
+import { ValidationParamsPipe } from '../../common/pipes/validation-param.pipe';
 import { CreatePlayerDTO } from '../dtos/create-player.dto';
 import { UpdatePlayerDTO } from '../dtos/update-player.dto';
 import { PlayerInterface } from '../interfaces/player.interface';
-import { PlayerValidationParamsPipe } from '../pipes/player-validation-param.pipe';
 import { PlayerService } from '../services/player.service';
 
 @Controller('v1/player')
@@ -31,7 +31,7 @@ export class PlayerController {
     @Put('/:id')
     @UsePipes(ValidationPipe)
     async updatePlayer(
-        @Param('id', PlayerValidationParamsPipe) id: string,
+        @Param('id', ValidationParamsPipe) id: string,
         @Body() updateData: UpdatePlayerDTO,
     ): Promise<void> {
         await this.playerService.update(id, updateData);
@@ -44,15 +44,15 @@ export class PlayerController {
 
     @Get('/:id')
     async getPlayerById(
-        @Param('id', PlayerValidationParamsPipe) id: string,
+        @Param('id', ValidationParamsPipe) id: string,
     ): Promise<PlayerInterface> {
         return this.playerService.getById(id);
     }
 
     @Delete('/id')
     async deletePlayer(
-        @Query('email', PlayerValidationParamsPipe) email: string,
-        @Param('id', PlayerValidationParamsPipe) id: string,
+        @Query('email', ValidationParamsPipe) email: string,
+        @Param('id', ValidationParamsPipe) id: string,
     ): Promise<void> {
         await this.playerService.delete(id);
     }
