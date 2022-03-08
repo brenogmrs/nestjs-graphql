@@ -5,7 +5,7 @@ export interface CategoryInterface extends Document {
     readonly category: string;
     description: string;
     events: Array<Event>;
-    players: Array<PlayerInterface>;
+    players: Array<PlayerInterface> | any;
 }
 
 export interface Event {

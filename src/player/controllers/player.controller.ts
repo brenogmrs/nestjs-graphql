@@ -22,8 +22,10 @@ export class PlayerController {
 
     @Post()
     @UsePipes(ValidationPipe)
-    async createPlayer(@Body() body: CreatePlayerDTO): Promise<void> {
-        await this.playerService.create(body);
+    async createPlayer(
+        @Body() body: CreatePlayerDTO,
+    ): Promise<PlayerInterface> {
+        return this.playerService.create(body);
     }
 
     @Put('/:id')

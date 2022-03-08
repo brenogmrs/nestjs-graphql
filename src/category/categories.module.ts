@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { PlayerModule } from '../player/player.module';
 import { CategoryController } from './controllers/category.controller';
 import { CategorySchema } from './schema/category.schema';
 import { CategoryService } from './services/category.service';
@@ -9,6 +10,7 @@ import { CategoryService } from './services/category.service';
         MongooseModule.forFeature([
             { name: 'Category', schema: CategorySchema },
         ]),
+        PlayerModule,
     ],
     controllers: [CategoryController],
     providers: [CategoryService],

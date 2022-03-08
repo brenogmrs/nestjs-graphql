@@ -4,7 +4,8 @@ import {
     NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
+import { PlayerService } from '../../player/services/player.service';
 import { CreateCategoryDTO } from '../dtos/create-category.dto';
 import { UpdateCategoryDTO } from '../dtos/update-category.dto';
 import { CategoryInterface } from '../interfaces/category.interface';
@@ -14,6 +15,8 @@ export class CategoryService {
     constructor(
         @InjectModel('Category')
         private readonly categoryModel: Model<CategoryInterface>,
+
+        private readonly playerService: PlayerService,
     ) {}
 
     public async create(
@@ -43,7 +46,7 @@ export class CategoryService {
     }
 
     public async getAll(): Promise<CategoryInterface[]> {
-        return this.categoryModel.find().exec();
+        return this.categoryModel.find().populate('players').exec();
     }
 
     public async update(
@@ -54,6 +57,30 @@ export class CategoryService {
 
         await this.categoryModel
             .findOneAndUpdate({ category }, { $set: updateData })
+            .exec();
+    }
+
+    public async assignCategoryToPlayer(associationData: string[]) {
+        const category = associationData['category'];
+        const playerId = associationData['playerId'];
+
+        const foundCategory = await this.findByCategory(category);
+
+        const isPlayerInCategory = foundCategory.players.find(
+            (player) => player._id.toString() === playerId,
+        );
+
+        if (isPlayerInCategory) {
+            throw new ConflictException(
+                'This player already is in this category',
+            );
+        }
+
+        await this.playerService.getById(playerId);
+
+        foundCategory.players.push(playerId);
+        await this.categoryModel
+            .findOneAndUpdate({ category }, { $set: foundCategory })
             .exec();
     }
 }
