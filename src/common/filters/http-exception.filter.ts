@@ -27,7 +27,7 @@ export class AllExceptions implements ExceptionFilter {
                 : exception;
 
         this.logger.error(
-            `HTTP CODE: ${status} MESSAGE: ${JSON.stringify(message)}`,
+            `HTTP CODE: ${status} MESSAGE: ${JSON.stringify(message.message)}`,
         );
 
         response.status(status).json({
