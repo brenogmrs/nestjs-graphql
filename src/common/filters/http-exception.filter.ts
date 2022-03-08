@@ -4,10 +4,13 @@ import {
     ExceptionFilter,
     HttpException,
     HttpStatus,
+    Logger,
 } from '@nestjs/common';
 
 @Catch()
 export class AllExceptions implements ExceptionFilter {
+    private readonly logger = new Logger(AllExceptions.name);
+
     catch(exception: any, host: ArgumentsHost) {
         const context = host.switchToHttp();
         const response = context.getResponse();
@@ -20,6 +23,10 @@ export class AllExceptions implements ExceptionFilter {
 
         const message =
             exception instanceof HttpException ? exception.getResponse() : '';
+
+        this.logger.error(
+            `HTTP CODE: ${status} MESSAGE: ${JSON.stringify(message)}`,
+        );
 
         response.status(status).json({
             timestamp: new Date().toISOString(),
