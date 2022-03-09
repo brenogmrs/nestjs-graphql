@@ -84,4 +84,16 @@ export class CategoryService {
             .findOneAndUpdate({ category }, { $set: foundCategory })
             .exec();
     }
+
+    public async getCategoryByPlayerId(
+        playerId: string,
+    ): Promise<CategoryInterface> {
+        await this.playerService.getById(playerId);
+
+        return this.categoryModel
+            .findOne()
+            .where('players')
+            .in([playerId])
+            .exec();
+    }
 }
