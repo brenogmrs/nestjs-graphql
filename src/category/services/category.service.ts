@@ -4,7 +4,8 @@ import {
     NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, ObjectId } from 'mongoose';
+import { Model } from 'mongoose';
+import { PlayerInterface } from '../../player/interfaces/player.interface';
 import { PlayerService } from '../../player/services/player.service';
 import { CreateCategoryDTO } from '../dtos/create-category.dto';
 import { UpdateCategoryDTO } from '../dtos/update-category.dto';
@@ -67,7 +68,7 @@ export class CategoryService {
         const foundCategory = await this.findByCategory(category);
 
         const isPlayerInCategory = foundCategory.players.find(
-            (player) => player._id.toString() === playerId,
+            (player: PlayerInterface) => player._id.toString() === playerId,
         );
 
         if (isPlayerInCategory) {
