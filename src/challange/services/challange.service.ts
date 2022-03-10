@@ -1,9 +1,14 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+    BadRequestException,
+    Injectable,
+    NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CategoryService } from '../../category/services/category.service';
 import { PlayerService } from '../../player/services/player.service';
 import { CreateChallengeDTO } from '../dto/create-challenge.dto';
+import { UpdatePlayerDTO } from '../dto/update-challenge.dto';
 import { ChallengeStatus } from '../enums/challenge-status.enum';
 import { ChallengeInterface } from '../interfaces/challenge.interface';
 @Injectable()
@@ -77,6 +82,44 @@ export class ChallangeService {
             .populate('challenger')
             .populate('players')
             .populate('match')
+            .exec();
+    }
+
+    public async getById(challangeId: string): Promise<ChallengeInterface> {
+        const foundChallenge = await this.challengeModel
+            .findOne({ _id: challangeId })
+            .exec();
+
+        if (!foundChallenge) {
+            throw new NotFoundException('Challange not found');
+        }
+
+        return foundChallenge;
+    }
+
+    public async update(
+        challangeId: string,
+        updateData: UpdatePlayerDTO,
+    ): Promise<ChallengeInterface> {
+        await this.getById(challangeId);
+
+        return this.challengeModel
+            .findOneAndUpdate(
+                {
+                    _id: challangeId,
+                },
+                { $set: updateData },
+            )
+            .exec();
+    }
+
+    public async delete(challangeId: string): Promise<ChallengeInterface> {
+        await this.getById(challangeId);
+
+        return this.challengeModel
+            .findOneAndDelete({
+                _id: challangeId,
+            })
             .exec();
     }
 }

@@ -1,13 +1,18 @@
 import {
     Body,
     Controller,
+    Delete,
     Get,
+    Param,
     Post,
+    Put,
     Query,
     UsePipes,
     ValidationPipe,
 } from '@nestjs/common';
+import { ValidationParamsPipe } from '../../common/pipes/validation-param.pipe';
 import { CreateChallengeDTO } from '../dto/create-challenge.dto';
+import { UpdatePlayerDTO } from '../dto/update-challenge.dto';
 import { ChallengeInterface } from '../interfaces/challenge.interface';
 import { ChallangeService } from '../services/challange.service';
 
@@ -28,5 +33,21 @@ export class ChallangeController {
         @Query('playerId') playerId: string,
     ): Promise<ChallengeInterface[]> {
         return this.challengeService.getAll(playerId);
+    }
+
+    @Put('/:challengeId')
+    @UsePipes(ValidationPipe)
+    async updateChallenge(
+        @Param('challengeId', ValidationParamsPipe) challengeId: string,
+        @Body() updateData: UpdatePlayerDTO,
+    ): Promise<ChallengeInterface> {
+        return this.challengeService.update(challengeId, updateData);
+    }
+
+    @Delete('/:challengeId')
+    async deleteChallenge(
+        @Param('challengeId', ValidationParamsPipe) challengeId: string,
+    ): Promise<ChallengeInterface> {
+        return this.challengeService.delete(challengeId);
     }
 }
