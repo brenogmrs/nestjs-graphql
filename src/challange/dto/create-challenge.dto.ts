@@ -6,6 +6,7 @@ import {
     IsNotEmpty,
     IsString,
 } from 'class-validator';
+import { PlayerInterface } from '../../player/interfaces/player.interface';
 
 export class CreateChallengeDTO {
     @IsNotEmpty()
@@ -14,10 +15,10 @@ export class CreateChallengeDTO {
 
     @IsNotEmpty()
     @IsString()
-    challengerId: string;
+    challenger: PlayerInterface;
 
     @IsArray()
     @ArrayMinSize(2)
     @ArrayMaxSize(2)
-    playersIds: Array<string>;
+    players: Array<PlayerInterface>;
 }

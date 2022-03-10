@@ -19,16 +19,14 @@ export class ChallangeService {
     public async create(
         challengeData: CreateChallengeDTO,
     ): Promise<ChallengeInterface> {
-        const { challengerId, playersIds } = challengeData;
-
         Promise.all(
-            playersIds.map(async (playerId: string) => {
-                await this.playerService.getById(playerId);
+            challengeData.players.map(async (player) => {
+                await this.playerService.getById(player._id);
             }),
         );
 
-        const isChallengerInPlayers = playersIds.find(
-            (playerId) => playerId === challengerId,
+        const isChallengerInPlayers = challengeData.players.find(
+            (player) => player._id === challengeData.challenger,
         );
 
         if (!isChallengerInPlayers) {
@@ -38,7 +36,9 @@ export class ChallangeService {
         }
 
         const isChallengerInCategory =
-            await this.categoryService.getCategoryByPlayerId(challengerId);
+            await this.categoryService.getCategoryByPlayerId(
+                challengeData.challenger as any,
+            );
 
         if (!isChallengerInCategory) {
             throw new BadRequestException(
@@ -52,8 +52,31 @@ export class ChallangeService {
             status: ChallengeStatus.PENDING,
         };
 
-        const player = new this.challengeModel(challengeToCreate);
+        const player = new this.challengeModel(challengeData);
+
+        Object.assign(player, challengeToCreate);
 
         return player.save();
+    }
+
+    public async getAll(_id: string): Promise<ChallengeInterface[]> {
+        if (_id) {
+            await this.playerService.getById(_id);
+
+            return this.challengeModel
+                .find()
+                .where('players')
+                .in([_id])
+                .populate('players')
+                .populate('match')
+                .exec();
+        }
+
+        return this.challengeModel
+            .find()
+            .populate('challenger')
+            .populate('players')
+            .populate('match')
+            .exec();
     }
 }
