@@ -33,7 +33,7 @@ export class PlayerService {
     }
 
     public async getById(id: string): Promise<PlayerInterface> {
-        const foundPlayer = await this.playerModel.findOne({ id }).exec();
+        const foundPlayer = await this.playerModel.findOne({ _id: id }).exec();
 
         if (!foundPlayer) {
             throw new NotFoundException(`Player not found`);
@@ -49,13 +49,13 @@ export class PlayerService {
         await this.getById(id);
 
         await this.playerModel
-            .findOneAndUpdate({ id }, { $set: updateData })
+            .findOneAndUpdate({ _id: id }, { $set: updateData })
             .exec();
     }
 
     public async delete(id: string): Promise<void> {
         await this.getById(id);
 
-        await this.playerModel.deleteOne({ id }).exec();
+        await this.playerModel.deleteOne({ _id: id }).exec();
     }
 }
