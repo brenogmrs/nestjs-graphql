@@ -117,9 +117,12 @@ export class ChallangeService {
         await this.getById(challangeId);
 
         return this.challengeModel
-            .findOneAndDelete({
-                _id: challangeId,
-            })
+            .findOneAndUpdate(
+                {
+                    _id: challangeId,
+                },
+                { $set: { status: ChallengeStatus.CANCELED } },
+            )
             .exec();
     }
 }
