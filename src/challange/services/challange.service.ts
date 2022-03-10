@@ -7,15 +7,22 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CategoryService } from '../../category/services/category.service';
 import { PlayerService } from '../../player/services/player.service';
+import { AssignMatchToChallengeDTO } from '../dto/assign-match-to-challenge.dto';
 import { CreateChallengeDTO } from '../dto/create-challenge.dto';
 import { UpdatePlayerDTO } from '../dto/update-challenge.dto';
 import { ChallengeStatus } from '../enums/challenge-status.enum';
-import { ChallengeInterface } from '../interfaces/challenge.interface';
+import {
+    ChallengeInterface,
+    MatchInterface,
+} from '../interfaces/challenge.interface';
 @Injectable()
 export class ChallangeService {
     constructor(
         @InjectModel('Challenge')
         private readonly challengeModel: Model<ChallengeInterface>,
+
+        @InjectModel('Match')
+        private readonly matchModel: Model<MatchInterface>,
 
         private readonly playerService: PlayerService,
         private readonly categoryService: CategoryService,
@@ -124,5 +131,14 @@ export class ChallangeService {
                 { $set: { status: ChallengeStatus.CANCELED } },
             )
             .exec();
+    }
+
+    public async assignMatchToChallenge(
+        challangeId: string,
+        assignMatchToChallengeDTO: AssignMatchToChallengeDTO,
+    ): Promise<ChallengeInterface> {
+        await this.getById(challangeId);
+
+        return new ChallengeInterface();
     }
 }

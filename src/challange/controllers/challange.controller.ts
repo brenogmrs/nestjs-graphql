@@ -11,6 +11,7 @@ import {
     ValidationPipe,
 } from '@nestjs/common';
 import { ValidationParamsPipe } from '../../common/pipes/validation-param.pipe';
+import { AssignMatchToChallengeDTO } from '../dto/assign-match-to-challenge.dto';
 import { CreateChallengeDTO } from '../dto/create-challenge.dto';
 import { UpdatePlayerDTO } from '../dto/update-challenge.dto';
 import { ChallengeInterface } from '../interfaces/challenge.interface';
@@ -26,6 +27,18 @@ export class ChallangeController {
         @Body() challengeData: CreateChallengeDTO,
     ): Promise<ChallengeInterface> {
         return this.challengeService.create(challengeData);
+    }
+
+    @Post('/:challengeId')
+    @UsePipes(ValidationPipe)
+    async assignMatchToChallenge(
+        @Param('challengeId', ValidationParamsPipe) challengeId: string,
+        @Body() assignMatchToChallengeDTO: AssignMatchToChallengeDTO,
+    ): Promise<ChallengeInterface> {
+        return this.challengeService.assignMatchToChallenge(
+            challengeId,
+            assignMatchToChallengeDTO,
+        );
     }
 
     @Get()
