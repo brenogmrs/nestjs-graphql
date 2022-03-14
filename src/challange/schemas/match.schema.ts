@@ -9,7 +9,7 @@ export const MatchSchema = new mongoose.Schema(
                 ref: 'Player',
             },
         ],
-        challenged: { type: mongoose.Schema.Types.ObjectId, ref: 'Player' },
+        winner: { type: mongoose.Schema.Types.ObjectId, ref: 'Player' },
         results: [{ set: { type: String } }],
     },
     { timestamps: true, collection: 'matches' },

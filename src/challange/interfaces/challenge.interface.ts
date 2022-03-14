@@ -16,7 +16,7 @@ export class ChallengeInterface extends Document {
 export interface MatchInterface extends Document {
     category: string;
     players: Array<PlayerInterface>;
-    challenged: PlayerInterface;
+    winner: PlayerInterface;
     result: Array<MatchResult>;
 }
 

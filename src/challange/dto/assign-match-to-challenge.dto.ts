@@ -4,7 +4,7 @@ import { MatchResult } from '../interfaces/challenge.interface';
 
 export class AssignMatchToChallengeDTO {
     @IsNotEmpty()
-    challenged: PlayerInterface;
+    winner: PlayerInterface;
 
     @IsNotEmpty()
     result: Array<MatchResult>;
