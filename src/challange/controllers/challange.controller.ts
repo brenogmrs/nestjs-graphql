@@ -29,8 +29,7 @@ export class ChallangeController {
         return this.challengeService.create(challengeData);
     }
 
-    @Post('/:challengeId')
-    @UsePipes(ValidationPipe)
+    @Post('/:challengeId/match/')
     async assignMatchToChallenge(
         @Param('challengeId', ValidationParamsPipe) challengeId: string,
         @Body() assignMatchToChallengeDTO: AssignMatchToChallengeDTO,

@@ -1,6 +1,7 @@
 import {
     BadRequestException,
     Injectable,
+    InternalServerErrorException,
     NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -135,9 +136,44 @@ export class ChallangeService {
 
     public async assignMatchToChallenge(
         challangeId: string,
-        assignMatchToChallengeDTO: AssignMatchToChallengeDTO,
+        assignMatchToChallenge: AssignMatchToChallengeDTO,
     ): Promise<ChallengeInterface> {
-        await this.getById(challangeId);
+        const foundChallenge = await this.getById(challangeId);
+
+        const isWinnerInChallenge = foundChallenge.players.find(
+            (player) => player._id === assignMatchToChallenge.winner,
+        );
+
+        if (!isWinnerInChallenge) {
+            throw new BadRequestException(
+                'The winner meust be in the challenge',
+            );
+        }
+
+        const match = new this.matchModel(assignMatchToChallenge);
+
+        Object.assign(match, {
+            category: foundChallenge.category,
+            players: foundChallenge.players,
+        });
+
+        const result = await match.save();
+
+        Object.assign(foundChallenge, {
+            status: ChallengeStatus.EXECUTED,
+            match: result._id,
+        });
+
+        try {
+            await this.challengeModel.findOneAndUpdate(
+                { _id: challangeId },
+                { $set: foundChallenge },
+            );
+        } catch (error) {
+            await this.matchModel.deleteOne({ _id: result._id }).exec();
+
+            throw new InternalServerErrorException();
+        }
 
         return new ChallengeInterface();
     }
