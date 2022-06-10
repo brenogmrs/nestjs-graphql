@@ -3,14 +3,14 @@ import { Transport } from '@nestjs/microservices';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.createMicroservice(AppModule, {
-    transport: Transport.RMQ,
-    options: {
-      urls: [process.env.SMARTRANKING_MQ_URL],
-      queue: process.env.ADMIN_SERVICE_QUEUE,
-    },
-  });
+    const app = await NestFactory.createMicroservice(AppModule, {
+        transport: Transport.RMQ,
+        options: {
+            urls: [process.env.SMARTRANKING_MQ_URL],
+            queue: process.env.ADMIN_SERVICE_QUEUE,
+        },
+    });
 
-  await app.listen();
+    await app.listen();
 }
 bootstrap();

@@ -1,11 +1,20 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { MongooseModule } from '@nestjs/mongoose';
+import { CategoryModule } from './modules/category/category.module';
+import { PlayerModule } from './modules/player/player.module';
 
 @Module({
-  imports: [ConfigModule.forRoot()],
-  controllers: [AppController],
-  providers: [AppService],
+    imports: [
+        ConfigModule.forRoot(),
+        MongooseModule.forRoot(String(process.env.MONGODB_CONN_STRING), {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        }),
+        CategoryModule,
+        PlayerModule,
+    ],
+    controllers: [],
+    providers: [],
 })
 export class AppModule {}
