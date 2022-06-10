@@ -10,14 +10,12 @@ import { CreateCategoryDTO } from '../dtos/create-category.dto';
 export class AdminService {
     private clientAdminBackend: ClientProxy;
 
-    private ADMIN_SERVICE_QUEUE = 'admin-backend';
-
     constructor() {
         this.clientAdminBackend = ClientProxyFactory.create({
             transport: Transport.RMQ,
             options: {
                 urls: [process.env.SMARTRANKING_MQ_URL],
-                queue: this.ADMIN_SERVICE_QUEUE,
+                queue: process.env.ADMIN_SERVICE_QUEUE,
             },
         });
     }
