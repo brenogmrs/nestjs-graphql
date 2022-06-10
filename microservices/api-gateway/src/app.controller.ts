@@ -1,12 +1,30 @@
-import { Controller, Get } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Logger,
+    Post,
+    UsePipes,
+    ValidationPipe,
+} from '@nestjs/common';
+import {
+    ClientProxy,
+    ClientProxyFactory,
+    Transport,
+} from '@nestjs/microservices';
 import { AppService } from './app.service';
+import { CreateCategoryDTO } from './dtos/create-category.dto';
+import { AdminService } from './services/admin.service';
 
-@Controller()
+@Controller('/v1')
 export class AppController {
-    constructor(private readonly appService: AppService) {}
+    private logger = new Logger(AppController.name);
 
-    @Get()
-    getHello(): string {
-        return this.appService.getHello();
+    constructor(private readonly adminService: AdminService) {}
+
+    @Post('category')
+    @UsePipes(ValidationPipe)
+    public async createCategory(@Body() categoryData: CreateCategoryDTO) {
+        this.logger.log('AdminService -> create category');
+        return this.adminService.createCategory(categoryData);
     }
 }
