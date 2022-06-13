@@ -8,6 +8,7 @@ async function bootstrap() {
         options: {
             urls: [process.env.SMARTRANKING_MQ_URL],
             queue: process.env.ADMIN_SERVICE_QUEUE,
+            noAck: false,
         },
     });
 
