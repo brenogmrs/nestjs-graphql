@@ -1,5 +1,5 @@
 import { Controller, Logger } from '@nestjs/common';
-import { EventPattern, Payload } from '@nestjs/microservices';
+import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
 import { CategoryInterface } from '../interfaces/category.interface';
 import { CategoryService } from '../services/category.service';
 
@@ -18,5 +18,18 @@ export class CategoryController {
         );
 
         return this.categoryService.create(categoryData);
+    }
+
+    @MessagePattern('get-categories')
+    public async getAllCategories(@Payload() categoryId?: string) {
+        this.logger.log(
+            `message received at topic:get-categories with ID: ${categoryId}`,
+        );
+
+        if (categoryId) {
+            return this.categoryService.getCategoryById(categoryId);
+        }
+
+        return this.categoryService.getAllCategories();
     }
 }

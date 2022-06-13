@@ -20,7 +20,14 @@ export class AdminService {
         });
     }
 
-    public async createCategory(categoryData: CreateCategoryDTO) {
+    public createCategory(categoryData: CreateCategoryDTO) {
         return this.clientAdminBackend.emit('create-category', categoryData);
+    }
+
+    public findCategories(categoryId?: string) {
+        return this.clientAdminBackend.send(
+            'get-categories',
+            categoryId ? categoryId : '',
+        );
     }
 }
