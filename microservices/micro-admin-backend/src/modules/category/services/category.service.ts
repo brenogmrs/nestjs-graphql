@@ -1,7 +1,7 @@
 import { Logger } from '@nestjs/common';
-import { RpcException } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { rpcExceptionError } from '../../common/helpers/errors/rcp-exception.helper';
 import { CategoryInterface } from '../interfaces/category.interface';
 
 export class CategoryService {
@@ -20,8 +20,25 @@ export class CategoryService {
 
             return categoryToCreate.save();
         } catch (error) {
-            this.logger.error(`ERROR: ${JSON.stringify(error)}`);
-            throw new RpcException(error.message);
+            return rpcExceptionError(this.logger, error);
+        }
+    }
+
+    public async getAllCategories(): Promise<CategoryInterface[]> {
+        try {
+            return this.categoryModel.find().exec();
+        } catch (error) {
+            return rpcExceptionError(this.logger, error);
+        }
+    }
+
+    public async getCategoryById(
+        categoryId: string,
+    ): Promise<CategoryInterface> {
+        try {
+            return this.categoryModel.findOne({ _id: categoryId }).exec();
+        } catch (error) {
+            return rpcExceptionError(this.logger, error);
         }
     }
 }
