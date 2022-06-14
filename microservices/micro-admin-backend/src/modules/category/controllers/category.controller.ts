@@ -7,7 +7,10 @@ import {
     RmqContext,
 } from '@nestjs/microservices';
 import { ACK_ERRORS } from '../../common/helpers/errors/constants';
-import { CategoryInterface } from '../interfaces/category.interface';
+import {
+    CategoryInterface,
+    CategoryUpdateInterface,
+} from '../interfaces/category.interface';
 import { CategoryService } from '../services/category.service';
 
 @Controller()
@@ -36,24 +39,61 @@ export class CategoryController {
         } catch ({ message }) {
             this.logger.error(`ERROR: ${JSON.stringify(message)}`);
 
-            ACK_ERRORS.map(async (ackError) => {
-                if (message.includes(ackError)) {
-                    await channel.ack(originalMessage);
-                }
-            });
+            const filterAckError = ACK_ERRORS.filter((ackError) =>
+                message.includes(ackError),
+            );
+
+            if (filterAckError) {
+                await channel.ack(filterAckError);
+            }
         }
     }
 
     @MessagePattern('get-categories')
-    public async getAllCategories(@Payload() categoryId?: string) {
+    public async getAllCategories(
+        @Ctx() context: RmqContext,
+        @Payload() categoryId?: string,
+    ) {
         this.logger.log(
             `message received at topic:get-categories with ID: ${categoryId}`,
         );
 
-        if (categoryId) {
-            return this.categoryService.getCategoryById(categoryId);
-        }
+        const channel = context.getChannelRef();
+        const originalMessage = context.getMessage();
 
-        return this.categoryService.getAllCategories();
+        try {
+            if (categoryId) {
+                return this.categoryService.getCategoryById(categoryId);
+            }
+
+            return this.categoryService.getAllCategories();
+        } finally {
+            await channel.ack(originalMessage);
+        }
+    }
+
+    @EventPattern('update-category')
+    public async updateCategory(
+        @Payload() { id, category }: CategoryUpdateInterface,
+        @Ctx() context: RmqContext,
+    ) {
+        this.logger.log(`message received at topic:update-categories`);
+
+        const channel = context.getChannelRef();
+        const originalMessage = context.getMessage();
+        try {
+            await this.categoryService.update(id, category);
+            await channel.ack(originalMessage);
+        } catch ({ message }) {
+            this.logger.error(`ERROR: ${JSON.stringify(message)}`);
+
+            const filterAckError = ACK_ERRORS.filter((ackError) =>
+                message.includes(ackError),
+            );
+
+            if (filterAckError) {
+                await channel.ack(filterAckError);
+            }
+        }
     }
 }
