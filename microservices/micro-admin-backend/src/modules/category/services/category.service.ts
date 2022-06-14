@@ -41,4 +41,17 @@ export class CategoryService {
             return rpcExceptionError(this.logger, error);
         }
     }
+
+    public async update(
+        id: string,
+        updateData: CategoryInterface,
+    ): Promise<void> {
+        try {
+            await this.categoryModel
+                .findOneAndUpdate({ _id: id }, { $set: updateData })
+                .exec();
+        } catch (error) {
+            return rpcExceptionError(this.logger, error);
+        }
+    }
 }
