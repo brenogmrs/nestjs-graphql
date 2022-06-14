@@ -13,3 +13,8 @@ export interface Event {
     operation: string;
     value: number;
 }
+
+export interface CategoryUpdateInterface {
+    id: string;
+    category: CategoryInterface;
+}
