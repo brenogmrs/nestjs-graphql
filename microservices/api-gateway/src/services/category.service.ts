@@ -5,9 +5,10 @@ import {
     Transport,
 } from '@nestjs/microservices';
 import { CreateCategoryDTO } from '../dtos/create-category.dto';
+import { UpdateCategoryDTO } from '../dtos/update-category.dto';
 
 @Injectable()
-export class AdminService {
+export class CategoryService {
     private clientAdminBackend: ClientProxy;
 
     constructor() {
@@ -29,5 +30,12 @@ export class AdminService {
             'get-categories',
             categoryId ? categoryId : '',
         );
+    }
+
+    public update(id: string, updateData: UpdateCategoryDTO) {
+        return this.clientAdminBackend.emit('update-category', {
+            id,
+            category: updateData,
+        });
     }
 }

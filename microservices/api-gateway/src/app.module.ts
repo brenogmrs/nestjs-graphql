@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { AdminController } from './controllers/admin.controller';
+import { CategoryController } from './controllers/category.controller';
 import { TimeoutInterceptor } from './interceptors/timout.interceptor';
-import { AdminService } from './services/admin.service';
+import { CategoryService } from './services/category.service';
 @Module({
     imports: [ConfigModule.forRoot()],
-    controllers: [AdminController],
-    providers: [AdminService, TimeoutInterceptor],
+    controllers: [CategoryController],
+    providers: [CategoryService, TimeoutInterceptor],
 })
 export class AppModule {}
